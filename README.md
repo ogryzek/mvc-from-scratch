@@ -144,5 +144,72 @@ app.get('/api/v1/toy/:id', (req, res) => {
     const toy = toys.find(toy => toy.id === parseInt(req.params.id));
     res.json(toy);
 });
-
 ```
+
+## Create a Resource
+To create a resource, we are going to need to send data to the server. We can do this through a form, or through a JSON payload. We'll start with a form and then move on to JSON.  
+  
+This actually means we want two endpoints for the HTML portions. One to serve the with a GET request at `/toy/new`, and one to handle the form submission with a POST request at `/toy`.
+
+The JSON API endpoint will be `/api/v1/toy` and will only handle POST requests.  
+  
+The process for creating a toy through a form is first to server the new resource form through a GET request, then to handle the form submission through a POST request, and redirect to the new resource.  
+  
+```js
+// app.js - GET new form for a toy resource
+// ...
+app.get('/toy/new', (req, res) => {
+    res.send(`
+        <form action="/toy" method="POST">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name">
+            <label for="price">Price</label>
+            <input type="number" name="price" id="price">   
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description">
+            <label for="image">Image</label>
+            <input type="text" name="image" id="image">
+            <button type="submit">Create</button>
+        </form>
+    `);
+});
+
+// POST form submission for a toy resource
+app.post('/toy', (req, res) => {
+    const toys = require('./toys.json');
+    const toy = {
+        id: toys.length + 1,
+        name: req.body.name,
+        price: req.body.price,
+        description: req.body.description,
+        image: req.body.image
+    };
+    toys.push(toy);
+    fs.writeFileSync('./toys.json', JSON.stringify(toys));
+    res.redirect('/toy/' + toy.id);
+});
+
+// POST API submission for a toy resource   
+app.post('/api/v1/toy', (req, res) => {
+    const toys = require('./toys.json');
+    const toy = {
+        id: toys.length + 1,
+        name: req.body.name,
+        price: req.body.price,
+        description: req.body.description,
+        image: req.body.image
+    };
+    toys.push(toy);
+    fs.writeFileSync('./toys.json', JSON.stringify(toys));
+    res.json(toy);
+});
+```
+
+In the case of the API, we probably want to set the content type to application/json and make sure we are able to properly parse the JSON payload.
+
+We also need to parse the form data. Maybe, we can do this with the `body-parser` module, or write our own.
+
+Once we get this part done, the next steps should be pretty straight forward, and then it's just a matter of refactoring.
+
+## Update a Resource
+## Delete a Resource
