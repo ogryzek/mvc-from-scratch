@@ -68,3 +68,45 @@ app.get('/api/v1/toys', (req, res) => {
 });
 ```
 
+Great. That actually worked! We will have to revisit it with the `fs` module later, but for now, this is a good start. Let's add the analogous HTML endpoint. We will maybe avoid using a template engine for now, and instead think through what we want the output to look like.  
+  
+We can create a list, and for each toy there will be a list item. At the top list item level will be the toy's ID. Inside that item, there will be another list of all of its other attributes, e.g.  
+  
+  * ID: 1
+    * Name: Barbie
+    * Price: $10.99
+    * Description: A doll for girls
+    * Image: barbie.jpg
+  * ID: 2
+    * Name: Hot Wheels
+    * Price: $5.99
+    * Description: A car for boys
+    * Image: hotwheels.jpg
+  * ID: 3
+    * Name: Mr. Potato Head
+    * Price: $2.99
+    * Description: A potato for everyone
+    * Image: mrpotatohead.jpg
+
+So, we can add the following code to our `app.js` to create this list:
+
+```js
+// app.js
+// ...
+app.get('/toys', (req, res) => {
+    const toys = require('./toys.json');
+    let html = '<ul>';
+    for (let toy of toys) {
+        html += `<li>${toy.id}</li>`;
+        html += '<ul>';
+        for (let key in toy) {
+            if (key !== 'id') {
+                html += `<li>${key}: ${toy[key]}</li>`;
+            }
+        }
+        html += '</ul>';
+    }
+    html += '</ul>';
+    res.send(html);
+});
+```
