@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "name": "Barbie",
+        "price": 10.99,
+        "description": "A doll for girls",
+        "image": "barbie.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Hot Wheels",
+        "price": 5.99,
+        "description": "A car for boys",
+        "image": "hotwheels.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Mr. Potato Head",
+        "price": 2.99,
+        "description": "A potato for everyone",
+        "image": "mrpotatohead.jpg"
+    }
+]
