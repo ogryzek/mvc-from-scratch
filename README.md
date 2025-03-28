@@ -110,3 +110,39 @@ app.get('/toys', (req, res) => {
     res.send(html);
 });
 ```
+
+Excellent! We have added an API endpoint for all toys, and an HTML view as well. Additionally, we have a toys.json file that we are using as a database. Not a bad start!  
+  
+## Adding CRUD Operations  
+  
+Next up, we want to take a look at adding CRUD operations, which are Create, Read, Update, and Delete. You're probably thinking, at some point we want to convert the json data to JavaScript objects, aren't you? Oh... you weren't thinking that?  
+  
+Well at some point we might. Only really if we have any reason to, so maybe we'll come up with a reason at some point.  
+  
+For now, let's look at displaying one toy resource. This is a big step, because in order to display one, we have to be able to find it, and the operation of finding a resource is useful for updating and deleting also.  
+  
+## Finding a Resource  
+  
+Let's go over both the RESTful API endpoint and the HTML view for a single resource. The HTML path will be `/toys/:id` or `/toy/:id` and the API path will be `/api/v1/toys/:id` or `/api/v1/toy/:id`. It's up to you how you decide to design your api endpoints, and resonable arguments can be made for a variety of choices. For use, let's go with singular for a single resource and plural for a collection of resources.  
+  
+```js
+// app.js
+// ...
+app.get('/toy/:id', (req, res) => {
+    const toys = require('./toys.json');
+    const toy = toys.find(toy => toy.id === parseInt(req.params.id));
+    let html = '<ul>';
+    for (let key in toy) {
+        html += `<li>${key}: ${toy[key]}</li>`;
+    }
+    html += '</ul>';
+    res.send(html);
+});
+
+app.get('/api/v1/toy/:id', (req, res) => {
+    const toys = require('./toys.json');
+    const toy = toys.find(toy => toy.id === parseInt(req.params.id));
+    res.json(toy);
+});
+
+```
