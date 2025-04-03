@@ -209,7 +209,17 @@ In the case of the API, we probably want to set the content type to application/
 
 We also need to parse the form data. Maybe, we can do this with the `body-parser` module, or write our own.
 
-Once we get this part done, the next steps should be pretty straight forward, and then it's just a matter of refactoring.
+Once we get this part done, the next steps should be pretty straight forward, and then it's just a matter of refactoring.  
+  
+We have addded the middleware to parse the body of the request, and updated some of the handlers to read from the .json data file rather than require it. The importance of this was to ensure that the data in the `toys` variable is refreshed when the method is called, rather than required at runtime and stale upon subsequent calls.
+
+```js
+// ...
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+//...
+```
 
 ## Update a Resource
 ## Delete a Resource

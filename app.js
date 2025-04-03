@@ -1,20 +1,24 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
 const port = 3000;
-
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 }); 
 
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.get('/api/v1/toys', (req, res) => {
-  const toys = require('./toys.json');
+  const toys = JSON.parse(fs.readFileSync('./toys.json'));
   res.json(toys);
 });
 
 app.get('/toys', (req, res) => {
-  const toys = require('./toys.json');
+  const toys = JSON.parse(fs.readFileSync('./toys.json'));
   let html = `<ul>`;
   toys.forEach(toy => {
     html += `<li>${toy.id}</li>`;
@@ -30,7 +34,8 @@ app.get('/toys', (req, res) => {
 });
 
 app.get('/toys/:id', (req, res) => {
-  const toys = require('./toys.json');
+  const toys = JSON.parse(fs.readFileSync('./toys.json'));
+  const id = parseInt(req.params.id);
   const toy = toys.find(toy => toy.id === parseInt(req.params.id));
   if (!toy) {
     res.status(404).send('Toy not found');
@@ -93,10 +98,11 @@ app.post('/toy/new', (req, res) => {
   };
   toys.push(toy);
   fs.writeFileSync('./toys.json', JSON.stringify(toys));
-  res.redirect('/toy/' + toy.id);
+  res.redirect('/toys/' + toy.id);
 });
 
 app.post('/api/v1/toy/new', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   const toys = require('./toys.json');
   console.log('req.body', req.body);
   const toy = {
